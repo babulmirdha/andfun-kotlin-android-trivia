@@ -27,34 +27,36 @@ import androidx.navigation.findNavController
 import com.example.android.navigation.databinding.FragmentGameBinding
 
 class GameFragment : Fragment() {
+
     data class Question(
             val text: String,
-            val answers: List<String>)
+            val answers: List<String>
+            , val correctAnswerIndex: Int)
 
     // The first answer is the correct one.  We randomize the answers before showing the text.
     // All questions must have four answers.  We'd want these to contain references to string
     // resources so we could internationalize. (or better yet, not define the questions in code...)
     private val questions: MutableList<Question> = mutableListOf(
             Question(text = "What is Android Jetpack?",
-                    answers = listOf("all of these", "tools", "documentation", "libraries")),
+                    answers = listOf("all of these", "tools", "documentation", "libraries"), correctAnswerIndex = 0),
             Question(text = "Base class for Layout?",
-                    answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot")),
+                    answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot"), correctAnswerIndex = 0),
             Question(text = "Layout for complex Screens?",
-                    answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout")),
+                    answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout"), correctAnswerIndex = 0),
             Question(text = "Pushing structured data into a Layout?",
-                    answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick")),
+                    answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick"), correctAnswerIndex = 0),
             Question(text = "Inflate layout in fragments?",
-                    answers = listOf("onCreateView", "onActivityCreated", "onCreateLayout", "onInflateLayout")),
+                    answers = listOf("onCreateView", "onActivityCreated", "onCreateLayout", "onInflateLayout"), correctAnswerIndex = 0),
             Question(text = "Build system for Android?",
-                    answers = listOf("Gradle", "Graddle", "Grodle", "Groyle")),
+                    answers = listOf("Gradle", "Graddle", "Grodle", "Groyle"), correctAnswerIndex = 0),
             Question(text = "Android vector format?",
-                    answers = listOf("VectorDrawable", "AndroidVectorDrawable", "DrawableVector", "AndroidVector")),
+                    answers = listOf("VectorDrawable", "AndroidVectorDrawable", "DrawableVector", "AndroidVector"), correctAnswerIndex = 0),
             Question(text = "Android Navigation Component?",
-                    answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher")),
+                    answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher"), correctAnswerIndex = 0),
             Question(text = "Registers app with launcher?",
-                    answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher")),
+                    answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher"), correctAnswerIndex = 0),
             Question(text = "Mark a layout for Data Binding?",
-                    answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>"))
+                    answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>"), correctAnswerIndex = 0)
     )
 
     lateinit var currentQuestion: Question
@@ -82,13 +84,13 @@ class GameFragment : Fragment() {
             if (-1 != checkedId) {
                 var answerIndex = 0
                 when (checkedId) {
-                    R.id.secondAnswerRadioButton -> answerIndex = 1
-                    R.id.thirdAnswerRadioButton -> answerIndex = 2
-                    R.id.fourthAnswerRadioButton -> answerIndex = 3
+                    binding.firstAnswerRadioButton.id -> answerIndex = 0
+                    binding.secondAnswerRadioButton.id -> answerIndex = 1
+                    binding.thirdAnswerRadioButton.id -> answerIndex = 2
                 }
                 // The first answer in the original question is always the correct one, so if our
                 // answer matches, we have the correct answer.
-                if (answers[answerIndex] == currentQuestion.answers[0]) {
+                if (answerIndex == currentQuestion.correctAnswerIndex) {
                     questionIndex++
                     // Advance to the next question
                     if (questionIndex < numQuestions) {
@@ -97,7 +99,7 @@ class GameFragment : Fragment() {
                         binding.invalidateAll()
                     } else {
                         // We've won!  Navigate to the gameWonFragment.
-                        view.findNavController().navigate(GameFragmentDirections.actionGameFragmentToGameWonFragment(numQuestions,questionIndex))
+                        view.findNavController().navigate(GameFragmentDirections.actionGameFragmentToGameWonFragment(numQuestions, questionIndex))
                     }
                 } else {
                     // Game over! A wrong answer sends us to the gameOverFragment.
